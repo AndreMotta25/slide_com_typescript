@@ -3,7 +3,7 @@ abstract class Slide {
   protected readonly _numberOfElements: number;
   protected readonly _dots: Dot;
 
-  public slide: NodeJS.Timer | null = null;
+  public slide: NodeJS.Timer | null | number = null;
 
   constructor(targetElement: string, containerDots: string) {
     this._elements = document.querySelectorAll<HTMLDivElement>(targetElement);
@@ -13,29 +13,6 @@ abstract class Slide {
   public addClickEvent(type: string, callback?: Function): void {
     this._dots.addClickEvent(type, this._elements, callback);
   }
-
-  // public initSlide(): void {
-  //   this._dots.addClickEvent(this._elements);
-  //   this.autoSlide();
-  // }
-
-  // public autoSlide(initial = 0): void {
-  //   // let contador = 0;
-  //   this.slide = setInterval(() => {
-  //     if (!Slide.pause) {
-  //       if (initial > this._numberOfElements) initial = 0;
-
-  //       ServiceActive.makeActive(initial, this._elements);
-  //       ServiceActive.makeActive(initial, this._dots.getDots());
-
-  //       initial++;
-  //     } else if (this.slide && Slide.pause) {
-  //       clearInterval(this.slide);
-  //       Slide.pause = false;
-  //       this.autoSlide(initial);
-  //     }
-  //   }, 2000);
-  // }
 }
 
 class Dot {
@@ -127,9 +104,6 @@ export class MakeComponent {
   // }
 }
 
-// depois podemos colocar um enum para saber se o slide vai ser automatico ou manual ou os dois
-// quero fazer um servico depois que manipule os dois
-
 // Essa classe é responsavel por adicionar e retirar a classe active
 class ServiceActive {
   static makeActive(
@@ -153,34 +127,28 @@ interface ISlidePanel {
 
 export class SlideAutoManual extends Slide implements ISlidePanel {
   static pause = false;
-  private _previewValue = 0;
-  private _actualValue = 0;
 
   initSlide(): void {
     this.addClickEvent("click", () => {
       SlideAutoManual.pause = true;
-      this._previewValue = this._actualValue;
     });
+
     this.autoSlide();
   }
 
   private autoSlide(initial = 0): void {
-    this._actualValue = initial;
-    let slide = setInterval(() => {
+    this.slide = setInterval(() => {
       if (!SlideAutoManual.pause) {
         if (initial > this._numberOfElements) initial = 0;
         ServiceActive.makeActive(initial, this._elements);
         ServiceActive.makeActive(initial, this._dots.getDots());
-        console.log(initial);
-        initial++;
-      } else if (slide && SlideAutoManual.pause) {
-        // clearInterval(slide);
+      } else if (this.slide && SlideAutoManual.pause) {
+        clearInterval(this.slide);
         SlideAutoManual.pause = false;
-        console.log("pausando", initial);
-        this.autoSlide(this._previewValue);
+        this.autoSlide(initial - 1);
       }
-      // console.log(initial);
-    }, 5000);
+      initial += 1;
+    }, 2000);
   }
 }
 

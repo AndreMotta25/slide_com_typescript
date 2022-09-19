@@ -74,35 +74,27 @@ class ServiceActive {
     }
 }
 class SlideAutoManual extends Slide {
-    constructor() {
-        super(...arguments);
-        this._previewValue = 0;
-        this._actualValue = 0;
-    }
     initSlide() {
         this.addClickEvent("click", () => {
             SlideAutoManual.pause = true;
-            this._previewValue = this._actualValue;
         });
         this.autoSlide();
     }
     autoSlide(initial = 0) {
-        this._actualValue = initial;
-        let slide = setInterval(() => {
+        this.slide = setInterval(() => {
             if (!SlideAutoManual.pause) {
                 if (initial > this._numberOfElements)
                     initial = 0;
                 ServiceActive.makeActive(initial, this._elements);
                 ServiceActive.makeActive(initial, this._dots.getDots());
-                console.log(initial);
-                initial++;
             }
-            else if (slide && SlideAutoManual.pause) {
+            else if (this.slide && SlideAutoManual.pause) {
+                clearInterval(this.slide);
                 SlideAutoManual.pause = false;
-                console.log("pausando", initial);
-                this.autoSlide(this._previewValue);
+                this.autoSlide(initial - 1);
             }
-        }, 5000);
+            initial += 1;
+        }, 2000);
     }
 }
 exports.SlideAutoManual = SlideAutoManual;
