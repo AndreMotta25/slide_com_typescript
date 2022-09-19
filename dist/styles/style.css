@@ -7,17 +7,37 @@
 [data-slide] img {
   width: 100%;
 }
-.ativo {
+[data-slide] {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+}
+.active {
   position: relative;
   top: 0;
   left: 0;
   opacity: 1;
   visibility: visible;
 }
+
 .dot {
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  background-color: grey;
+  background-color: orange;
   display: block;
+  cursor: pointer;
+}
+.dot.active {
+  background-color: rgba(0, 0, 0, 60%);
+  border: 1px solid rebeccapurple;
+  transform: scale(1.2, 1.2);
+  transition: all 0.5s ease-in-out;
+}
+.dots {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
 }

@@ -134,8 +134,12 @@ exports.SlideAutoManual = void 0;
 const ServiceActive_1 = __webpack_require__(/*! ./ServiceActive */ "./src/Entities/ServiceActive.ts");
 const Slide_1 = __webpack_require__(/*! ./Slide */ "./src/Entities/Slide.ts");
 class SlideAutoManual extends Slide_1.Slide {
+    constructor(targetElement, containerDots, typeEvent = "click") {
+        super(targetElement, containerDots);
+        this._typeEvent = typeEvent;
+    }
     initSlide() {
-        this.addClickEvent("click", () => {
+        this.addClickEvent(this._typeEvent, () => {
             SlideAutoManual.pause = true;
         });
         this.autoSlide();
@@ -143,7 +147,7 @@ class SlideAutoManual extends Slide_1.Slide {
     autoSlide(initial = 0) {
         this.slide = setInterval(() => {
             if (!SlideAutoManual.pause) {
-                if (initial > this._numberOfElements)
+                if (initial > this._numberOfElements || initial < 0)
                     initial = 0;
                 ServiceActive_1.ServiceActive.makeActive(initial, this._elements);
                 ServiceActive_1.ServiceActive.makeActive(initial, this._dots.getDots());
@@ -200,7 +204,7 @@ var exports = __webpack_exports__;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const SlideAutoManual_1 = __webpack_require__(/*! ./Entities/SlideAutoManual */ "./src/Entities/SlideAutoManual.ts");
-const slideManual = new SlideAutoManual_1.SlideAutoManual("[data-slide]", ".dots");
+const slideManual = new SlideAutoManual_1.SlideAutoManual("[data-slide]", ".dots", "click");
 slideManual.initSlide();
 
 })();
